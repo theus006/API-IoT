@@ -1,7 +1,7 @@
 @url = http://localhost:3000
 
 ###POST
-POST {{url}}/users/create
+POST {{url}}/users
 Content-Type: application/json
 
 {
@@ -16,9 +16,9 @@ GET {{url}}/users
 DELETE {{url}}/users/matheus
 
 ###PUT
-PATCH {{url}}/users/julio
+PATCH {{url}}/users/matheus
 Content-Type: application/json
 
 {
-    "password":"senha"
+    "password":"1991"
 }
