@@ -1,0 +1,24 @@
+@url = http://localhost:3000
+
+###POST
+POST {{url}}/users/create
+Content-Type: application/json
+
+{
+    "name":"matheus",
+    "password":"Teste123*"
+}
+
+###GET
+GET {{url}}/users
+
+###DELETE
+DELETE {{url}}/users/matheus
+
+###PUT
+PATCH {{url}}/users/julio
+Content-Type: application/json
+
+{
+    "password":"senha"
+}
