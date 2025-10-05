@@ -32,6 +32,58 @@ router.get("/", (req, res) => {
     });
 });
 
+//rota POST url/users/ -> adicionar usuários
+router.post("/", async (req, res) => {
+    //obtem os dados em JSON necessários, já extraidos pelo express.json() 
+    //no script principal da aplicação
+    const {name, password} = req.body;
+
+    if(!name || !password) { //caso a senha ou o nome do usuário estejam faltando:
+        //retorna um erro e sua mensagem
+        return res.status(400).json({
+            "status":"erro",
+            "mensagem":"um parâmetros ausentes."
+        });
+    }
+    //estando todos os parâmetros, cria-se o hash da senha
+    const hash = await bcrypt.hash(password, 10);
+
+    conn.query("select name from Users where name = ?", [name], (err, result) => { //verifica se o usuário já existe
+        if(err) { //se houver algum problema com o banco no momento da pesquisa, retorna a mensagem abaixo:
+            return res.status(500).json({
+                "status":"erro",
+                "mensagem":"erro no servidor."
+            });
+        }
+        if(result.length > 0) { //se o nome for encontrado no banco, encerra o script e avisa o usuário que já existe
+            return res.status(409).json({
+                "status":"erro",
+                "mensagem":"usuário já existente"
+            }); 
+        } else { //se não existir, tenta a inserção dos dados no banco (note que foi passado o hash da senha)
+            conn.query("insert into Users(name, password) values(?,?)", [name, hash], (err, result) => {
+                if(err) {
+                    return res.status(500).json({ //se houver algum problema com o banco no momento da ação, retorna a mensagem abaixo:
+                        "status":"erro",
+                        "mensagem":"erro no servidor."
+                    });
+                }
+                if(result.affectedRows >= 1) { //se o usuário foi adicionado, retorna a mensagem abaixo:
+                    return res.status(201).json({
+                        "status":"sucesso",
+                        "mensagem":`usuário ${name} criado.`
+                    });
+                } else { //caso contrário, retorna o erro abaixo
+                    return res.status(400).json({
+                        "status":"erro",
+                        "mensagem":"o usuáro não pôde ser criado."
+                    });
+                }
+            });
+        }
+    });
+});
+
 //rota PATCH url/users/:name -> atualizar senha pelo nome
 router.patch("/:name", async (req, res) => {
     //obtem a nova senha em json, passada pelo body e tratada no 
@@ -81,58 +133,6 @@ router.patch("/:name", async (req, res) => {
                 "status":"erro",
                 "mensagem":"nome de usuário não encontrado."
             })
-        }
-    });
-});
-
-//rota POST url/users/ -> adicionar usuários
-router.post("/", async (req, res) => {
-    //obtem os dados em JSON necessários, já extraidos pelo express.json() 
-    //no script principal da aplicação
-    const {name, password} = req.body;
-
-    if(!name || !password) { //caso a senha ou o nome do usuário estejam faltando:
-        //retorna um erro e sua mensagem
-        return res.status(400).json({
-            "status":"erro",
-            "mensagem":"um parâmetros ausentes."
-        });
-    }
-    //estando todos os parâmetros, cria-se o hash da senha
-    const hash = await bcrypt.hash(password, 10);
-
-    conn.query("select name from Users where name = ?", [name], (err, result) => { //verifica se o usuário já existe
-        if(err) { //se houver algum problema com o banco no momento da pesquisa, retorna a mensagem abaixo:
-            return res.status(500).json({
-                "status":"erro",
-                "mensagem":"erro no servidor."
-            });
-        }
-        if(result.length > 0) { //se o nome for encontrado no banco, encerra o script e avisa o usuário que já existe
-            return res.status(409).json({
-                "status":"erro",
-                "mensagem":"usuário já existente"
-            }); 
-        } else { //se não existir, tenta a inserção dos dados no banco (note que foi passado o hash da senha)
-            conn.query("insert into Users(name, password) values(?,?)", [name, hash], (err, result) => {
-                if(err) {
-                    return res.status(500).json({ //se houver algum problema com o banco no momento da ação, retorna a mensagem abaixo:
-                        "status":"erro",
-                        "mensagem":"erro no servidor."
-                    });
-                }
-                if(result.affectedRows >= 1) { //se o usuário foi adicionado, retorna a mensagem abaixo:
-                    return res.status(201).json({
-                        "status":"sucesso",
-                        "mensagem":`usuário ${name} criado.`
-                    });
-                } else { //caso contrário, retorna o erro abaixo
-                    return res.status(400).json({
-                        "status":"erro",
-                        "mensagem":"o usuáro não pôde ser criado."
-                    });
-                }
-            });
         }
     });
 });
