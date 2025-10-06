@@ -15,4 +15,5 @@ create table Sensors (
     time TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     id_user int,
     foreign key (id_user) references Users(id)
+    ON DELETE CASCADE
 );

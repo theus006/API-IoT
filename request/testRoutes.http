@@ -30,3 +30,7 @@ Content-Type: application/json
     "name":"matheus",
     "password":"Teste123*"
 }
+
+###GET -> obtem os dados do sensor pelo ID do usuário
+GET {{url}}/sensors
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibmFtZSI6Im1hdGhldXMiLCJpYXQiOjE3NTk3NzczNjUsImV4cCI6MTc1OTc3Nzk2NX0.WfKy245osZq59EhC9OGf9C7zvlecgu3XnNH9RK5kfxY

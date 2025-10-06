@@ -15,6 +15,7 @@ const router = express.Router();
 router.get("/", (req, res) => {
     conn.query("select id,name from Users", (err, result) => { 
         if(err) { //se houver algum problema com o banco no momento da pesquisa, retorna a mensagem abaixo:
+            console.log(err); //exibe o erro no console
             return res.status(500).json({
                 "status":"erro",
                 "mensagem":"erro no servidor."
@@ -23,12 +24,12 @@ router.get("/", (req, res) => {
         if(result.length > 0) { //se forem encontrados registros no banco, os exibe
             return res.status(200).json({
                 "status":"sucesso",
-                "usuários": result
+                "usuarios": result
             });
         } else { //se não forem encontrados registros no banco, exibe a mensagem abaixo
             return res.status(200).json({
                 "status":"sucesso",
-                "usuários": []
+                "usuarios": []
             });
         }
     });
@@ -52,6 +53,7 @@ router.post("/", async (req, res) => {
 
     conn.query("select name from Users where name = ?", [name], (err, result) => { //verifica se o usuário já existe
         if(err) { //se houver algum problema com o banco no momento da pesquisa, retorna a mensagem abaixo:
+            console.log(err); //exibe o erro no console
             return res.status(500).json({
                 "status":"erro",
                 "mensagem":"erro no servidor."
@@ -65,6 +67,7 @@ router.post("/", async (req, res) => {
         } else { //se não existir, tenta a inserção dos dados no banco (note que foi passado o hash da senha)
             conn.query("insert into Users(name, password) values(?,?)", [name, hash], (err, result) => {
                 if(err) {
+                    console.log(err); //exibe o erro no console
                     return res.status(500).json({ //se houver algum problema com o banco no momento da ação, retorna a mensagem abaixo:
                         "status":"erro",
                         "mensagem":"erro no servidor."
@@ -105,6 +108,7 @@ router.patch("/:name", async (req, res) => {
 
     conn.query("select name from Users where name = ?", [name], (err, result) => {
         if(err) { //se houver algum problema com o banco no momento da pesquisa, retorna a mensagem abaixo:
+            console.log(err); //exibe o erro no console
             return res.status(500).json({
                 "status":"erro",
                 "mensagem":"erro no servidor."
@@ -113,6 +117,7 @@ router.patch("/:name", async (req, res) => {
         if(result.length > 0) { //se forem encontrados registros no banco, tenta atualizar a senha
             conn.query("update Users set password = ? where name = ?", [hash, name], (err, result) => {
                 if(err) {//se houver algum erro no servidor no momento da ação, retorna a mensagem abaixo
+                    console.log(err); //exibe o erro no console
                     return res.status(500).json({
                         "status":"erro",
                         "mensagem":"erro no servidor."
@@ -150,13 +155,14 @@ router.delete("/:name", auth, (req, res) => {
     }
     //verifica se o nome de usuário recebido pelo token é o mesmo a ser removido
     if(req.username != name) {
-        return res.status(400).json({
+        return res.status(403).json({
             "status":"erro",
             "mensagem":"permissão negada"
         });
     } else {
         conn.query("delete from Users where name = ?", [name], (err, result)=> {//realiza a ação de deletar o registro pelo nome
             if(err) {
+                console.log(err); //exibe o erro no console
                 return res.status(500).json({ //se houver algum problema com o banco no momento da ação, retorna a mensagem abaixo:
                     "status":"erro",
                     "mensagem":"erro no servidor."
