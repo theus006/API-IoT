@@ -5,6 +5,7 @@ const bcrypt = require("bcrypt");
 //importa o objeto de conexão com o banco, criado e parametrisado 
 //em outro arquivo
 const conn = require("../config/connect");
+const auth = require("../middlewares/auth")
 
 //cria um objeto de roteamento
 const router = express.Router();
@@ -137,8 +138,8 @@ router.patch("/:name", async (req, res) => {
     });
 });
 
-//rota DELETE url/users/:nome -> remove um usuário pelo nome
-router.delete("/:name", (req, res) => {
+//rota DELETE url/users/:nome -> remove um usuário pelo nome (Exige login)
+router.delete("/:name", auth,(req, res) => {
     const {name} = req.params;
     if(!name) { //se não foi específicado o nome na url
         return res.status(400).json({
@@ -146,25 +147,33 @@ router.delete("/:name", (req, res) => {
             "mensagem":"nome ausente"
         });
     }
-    conn.query("delete from Users where name = ?", [name], (err, result)=> {//realiza a ação de deletar o registro pelo nome
-        if(err) {
-            return res.status(500).json({ //se houver algum problema com o banco no momento da ação, retorna a mensagem abaixo:
-                "status":"erro",
-                "mensagem":"erro no servidor."
-            });
-        }
-        if(result.affectedRows >= 1) { //se o usuário foi removido, retorna a mensagem abaixo:
-            return res.status(200).json({
-                "status":"sucesso",
-                "mensagem":`usuário ${name} removido.`
-            });
-        } else { //caso contrário, retorna o erro abaixo
-            return res.status(404).json({
-                "status":"erro",
-                "mensagem":"nome de usuário inexistente"
-            });
-        }
-    })
+    //verifica se o nome de usuário recebido pelo token é o mesmo a ser removido
+    if(req.username != name) {
+        return res.status(400).json({
+            "status":"erro",
+            "mensagem":"permissão negada"
+        });
+    } else {
+        conn.query("delete from Users where name = ?", [name], (err, result)=> {//realiza a ação de deletar o registro pelo nome
+            if(err) {
+                return res.status(500).json({ //se houver algum problema com o banco no momento da ação, retorna a mensagem abaixo:
+                    "status":"erro",
+                    "mensagem":"erro no servidor."
+                });
+            }
+            if(result.affectedRows >= 1) { //se o usuário foi removido, retorna a mensagem abaixo:
+                return res.status(200).json({
+                    "status":"sucesso",
+                    "mensagem":`usuário ${name} removido.`
+                });
+            } else { //caso contrário, retorna o erro abaixo
+                return res.status(404).json({
+                    "status":"erro",
+                    "mensagem":"nome de usuário inexistente"
+                });
+            }
+        });
+    }
 });
 
 //exporta o objeto de roteamento para outros módulos

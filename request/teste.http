@@ -1,6 +1,6 @@
 @url = http://localhost:3000
 
-###POST
+###POST -> criar usuário
 POST {{url}}/users
 Content-Type: application/json
 
@@ -9,13 +9,13 @@ Content-Type: application/json
     "password":"Teste123*"
 }
 
-###GET
+###GET -> obter lista com nomes de usuários
 GET {{url}}/users
 
-###DELETE
+###DELETE -> remover usuário (exige token)
 DELETE {{url}}/users/matheus
-
-###PUT
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6OCwibmFtZSI6Im1hdGhldXMiLCJpYXQiOjE3NTk3MTY1ODQsImV4cCI6MTc1OTcxNzE4NH0.WXxdTZnttzpav3D_Xuu1iWIrcGQK_zzWKssjj4A0VS4
+###PUT -> atualizar senha de usuário
 PATCH {{url}}/users/matheus
 Content-Type: application/json
 
@@ -23,7 +23,7 @@ Content-Type: application/json
     "password":"1991"
 }
 
-###POST
+###POST -> fazer login
 POST {{url}}/login
 Content-Type: application/json
 
