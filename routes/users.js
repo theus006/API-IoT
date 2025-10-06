@@ -5,7 +5,8 @@ const bcrypt = require("bcrypt");
 //importa o objeto de conexão com o banco, criado e parametrisado 
 //em outro arquivo
 const conn = require("../config/connect");
-const auth = require("../middlewares/auth")
+//importa o middleware que verifica se o usuário está logado
+const auth = require("../middlewares/auth");
 
 //cria um objeto de roteamento
 const router = express.Router();
@@ -133,13 +134,13 @@ router.patch("/:name", async (req, res) => {
             return res.status(404).json({
                 "status":"erro",
                 "mensagem":"nome de usuário não encontrado."
-            })
+            });
         }
     });
 });
 
 //rota DELETE url/users/:nome -> remove um usuário pelo nome (Exige login)
-router.delete("/:name", auth,(req, res) => {
+router.delete("/:name", auth, (req, res) => {
     const {name} = req.params;
     if(!name) { //se não foi específicado o nome na url
         return res.status(400).json({

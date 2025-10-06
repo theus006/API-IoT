@@ -4,7 +4,7 @@ const express = require("express");
 //importa o arquivo .env com a numeração da porta
 require("dotenv").config();
 
-//importa o arquivo de roteamento para /users
+//importa o arquivos de roteamento para /users e /login
 const usersRouter = require("./routes/users");
 const login = require("./routes/login");
 

@@ -28,12 +28,11 @@ const verifyToken = (req, res, next) => {
         next();
 
     } catch(error) { //exibe um erro se o payload foi modificado ou se o token for inválido por exemplo
-        return res.status(400).json({
+        return res.status(404).json({
             "status":"erro",
             "mensagem":"token inválido"
         });
     }
-    
 }
 
 //exporta a função para outros módulos

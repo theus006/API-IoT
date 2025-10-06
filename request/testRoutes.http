@@ -14,13 +14,12 @@ GET {{url}}/users
 
 ###DELETE -> remover usuário (exige token)
 DELETE {{url}}/users/matheus
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6OCwibmFtZSI6Im1hdGhldXMiLCJpYXQiOjE3NTk3MTY1ODQsImV4cCI6MTc1OTcxNzE4NH0.WXxdTZnttzpav3D_Xuu1iWIrcGQK_zzWKssjj4A0VS4
 ###PUT -> atualizar senha de usuário
 PATCH {{url}}/users/matheus
 Content-Type: application/json
 
 {
-    "password":"1991"
+    "password":"Teste123*"
 }
 
 ###POST -> fazer login
