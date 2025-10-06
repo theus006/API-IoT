@@ -14,9 +14,8 @@ const app = express();
 //trata o json no body das requisições
 app.use(express.json());
 
-//direciona as requisições para /users ao arquivo de rotas correspondente
+//direciona as requisições aos endpoints aos arquivos de rotas correspondente
 app.use("/users", usersRouter);
-
 app.use("/login", login);
 
 //inicia o servidor e define a porta que receberá as solicitações
