@@ -11,30 +11,6 @@ const auth = require("../middlewares/auth");
 //cria um objeto de roteamento
 const router = express.Router();
 
-//rota que exibe os nomes e IDs de todos os usuários GET url/users
-router.get("/", (req, res) => {
-    conn.query("select id,name from Users", (err, result) => { 
-        if(err) { //se houver algum problema com o banco no momento da pesquisa, retorna a mensagem abaixo:
-            console.log(err); //exibe o erro no console
-            return res.status(500).json({
-                "status":"erro",
-                "mensagem":"erro no servidor."
-            });
-        }
-        if(result.length > 0) { //se forem encontrados registros no banco, os exibe
-            return res.status(200).json({
-                "status":"sucesso",
-                "usuarios": result
-            });
-        } else { //se não forem encontrados registros no banco, exibe a mensagem abaixo
-            return res.status(200).json({
-                "status":"sucesso",
-                "usuarios": []
-            });
-        }
-    });
-});
-
 //rota POST url/users/ -> adicionar usuários
 router.post("/", async (req, res) => {
     //obtem os dados em JSON necessários, já extraidos pelo express.json() 
