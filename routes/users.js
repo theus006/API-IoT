@@ -11,7 +11,7 @@ const auth = require("../middlewares/auth");
 //cria um objeto de roteamento
 const router = express.Router();
 
-//rota POST url/users/ -> adicionar usuários
+//rota POST url/users/ -> adicionar usuário
 router.post("/", async (req, res) => {
     //obtem os dados em JSON necessários, já extraidos pelo express.json() 
     //no script principal da aplicação
